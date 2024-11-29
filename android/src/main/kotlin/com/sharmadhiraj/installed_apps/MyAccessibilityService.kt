@@ -21,7 +21,7 @@ class MyAccessibilityService : AccessibilityService() {
             val rootNode = rootInActiveWindow
             if (rootNode != null) {
                 Log.d("AccessibilityService", "Root node detected. Checking for 'Force Stop' button.")
-                
+                logAllButtons(rootNode)
                 // "Force Stop" butonunu arıyoruz
                 val forceStopButton = findForceStopButton(rootNode)
                 if (forceStopButton != null && forceStopButton.isEnabled) {
@@ -49,12 +49,32 @@ class MyAccessibilityService : AccessibilityService() {
             Log.d("AccessibilityService", "App settings screen opened for package: $packageName")
         } catch (e: Exception) {
             Log.e("AccessibilityService", "Error opening app settings: ${e.message}")
-            return false
         }
 
         Thread.sleep(1000)
         
         return true
+    }
+
+    private fun logAllButtons(root: AccessibilityNodeInfo) {
+        for (i in 0 until root.childCount) {
+            val child = root.getChild(i)
+            if (child != null) {
+                Log.d("AccessibilityService", "Class: ${child.className}, Text: ${child.text}, ViewID: ${child.viewIdResourceName}")
+    
+                // Eğer düğme sınıfıysa ek bilgi logla
+                if (child.className == "android.widget.Button") {
+                    Log.d("AccessibilityService", "Button Detected!")
+                    Log.d("AccessibilityService", "Text: ${child.text}")
+                    Log.d("AccessibilityService", "ViewID: ${child.viewIdResourceName}")
+                    Log.d("AccessibilityService", "ContentDescription: ${child.contentDescription}")
+                    Log.d("AccessibilityService", "IsEnabled: ${child.isEnabled}")
+                }
+    
+                // Çocuk düğümlerini de taramak için rekürsif çağrı yapıyoruz
+                logAllButtons(child)
+            }
+        }
     }
 
     private fun findForceStopButton(root: AccessibilityNodeInfo): AccessibilityNodeInfo? {
