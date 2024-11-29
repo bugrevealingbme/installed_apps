@@ -21,7 +21,6 @@ class MyAccessibilityService : AccessibilityService() {
             val rootNode = rootInActiveWindow
             if (rootNode != null) {
                 Log.d("AccessibilityService", "Root node detected. Checking for 'Force Stop' button.")
-                logAllButtons(rootNode)
                 // "Force Stop" butonunu arıyoruz
                 val forceStopButton = findForceStopButtonGenerically(rootNode)
                 if (forceStopButton != null && forceStopButton.isEnabled) {
@@ -29,6 +28,7 @@ class MyAccessibilityService : AccessibilityService() {
                     Log.d("AccessibilityService", "'Force Stop' button clicked.")
                 } else {
                     //
+                    Log.d("AccessibilityService", "No button amk $forceStopButton")
                 }
             } else {
                 Log.d("AccessibilityService", "Root node is null.")
@@ -54,18 +54,6 @@ class MyAccessibilityService : AccessibilityService() {
         Thread.sleep(1000)
         
         return true
-    }
-
-    private fun logAllButtons(root: AccessibilityNodeInfo) {
-        for (i in 0 until root.childCount) {
-            val child = root.getChild(i)
-            if (child != null) {
-                Log.d("AccessibilityService", "Class: ${child.className}, Text: ${child.text}, ViewID: ${child.viewIdResourceName}")
-
-                // Çocuk düğümlerini de taramak için rekürsif çağrı yapıyoruz
-                logAllButtons(child)
-            }
-        }
     }
 
     private fun findForceStopButtonGenerically(root: AccessibilityNodeInfo): AccessibilityNodeInfo? {
