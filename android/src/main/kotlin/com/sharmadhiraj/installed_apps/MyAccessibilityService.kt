@@ -31,10 +31,11 @@ class MyAccessibilityService : AccessibilityService() {
                     Handler().postDelayed({
                         // "OK" butonunu kontrol et ve tıkla
                         val okButton = findButtonByText(rootNode, "OK")
-                        if (okButton != null && okButton.isEnabled) {
-                            okButton.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+                        val clickableokButton = getClickableNode(okButton)
+                        if (clickableokButton != null) {
+                            clickableokButton.performAction(AccessibilityNodeInfo.ACTION_CLICK)
                         }
-                    }, 2000)
+                    }, 1000)
                 } else {
                     //
                     Log.d("AccessibilityService", "No button amk $forceStopButton")
