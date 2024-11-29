@@ -216,9 +216,8 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
                     }
         
                     // Bekleme süresi
-                    val delayTime = if (index == 0) 11111L else 5555L
-                    Log.d("Delay", "Waiting for $delayTime milliseconds before next app.")
-                }, delayTime)
+                    Log.d("Delay", "Waiting for before next app.")
+                }, if (index == 0) 11111L else 5555L)
             }
         }
         return true
