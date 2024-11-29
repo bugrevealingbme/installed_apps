@@ -11,24 +11,9 @@ import android.content.Context
 
 class MyAccessibilityService : AccessibilityService() {
 
-    private var cachedRootNode: AccessibilityNodeInfo? = null
-
-    fun getCachedRootNode(): AccessibilityNodeInfo? {
-        return cachedRootNode
-    }
-
-    fun setCachedRootNode(node: AccessibilityNodeInfo?) {
-        cachedRootNode = node
-    }
         
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        val sourceNode = event?.source
-        if (sourceNode != null) {
-            Log.d("AccessibilityService", "Source node found: $sourceNode")
-            setCachedRootNode(sourceNode)
-        } else {
-            Log.e("AccessibilityService", "Source node is null!")
-        }
+        //
     }
 
     override fun onInterrupt() {}
@@ -40,21 +25,10 @@ class MyAccessibilityService : AccessibilityService() {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
             context.startActivity(intent)
-
-            // Bekleme döngüsü
-            for (i in 1..10) {
-                Thread.sleep(1000)
-                val rootNode = getCachedRootNode() ?: rootInActiveWindow
-                if (rootNode != null) {
-                    Log.d("AccessibilityService", "Root node found after waiting.")
-                    break
-                }
-                Log.d("AccessibilityService", "Root node hala null amk")
-            }
-
-            val rootNode = getCachedRootNode() ?: rootInActiveWindow
+         
+            val rootNode = rootInActiveWindow
             if (rootNode == null) {
-                Log.e("AccessibilityService", "Root node is null even after waiting!")
+                Log.e("AccessibilityService", "Root node is null!")
                 return false
             }
 
