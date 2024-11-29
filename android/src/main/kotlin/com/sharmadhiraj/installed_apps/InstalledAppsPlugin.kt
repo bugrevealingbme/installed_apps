@@ -1,5 +1,6 @@
 package com.sharmadhiraj.installed_apps
 
+import android.os.Handler
 import android.util.Log
 import android.provider.Settings
 import android.app.ActivityManager
@@ -213,11 +214,8 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
                     Log.e("ClosedApp", "Failed to stop $packageName")
                 }
 
-                if (index == 0) {
-                    Thread.sleep(11111)
-                } else {
-                    Thread.sleep(5555)
-                }
+                val delayTime = if (index == 0) 11111L else 5555L
+                handler.postDelayed({}, delayTime) // Asenkron bekleme (Thread.sleep yerine)
             }
         }
         return true
