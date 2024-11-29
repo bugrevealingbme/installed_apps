@@ -206,7 +206,7 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
         val accessibilityService = MyAccessibilityService()
         packages.forEach { packageName ->
             if (packageName != context!!.packageName) {
-                val result = accessibilityService.closeAppInBackground(packageName)
+                val result = accessibilityService.closeAppInBackground(context!!, packageName)
                 if (result) {
                     Log.d("ClosedApp", "Successfully stopped $packageName")
                 } else {
