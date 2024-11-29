@@ -1,6 +1,5 @@
 package com.sharmadhiraj.installed_apps
 
-import android.view.accessibility.AccessibilityManager
 import android.accessibilityservice.AccessibilityService
 import android.content.Intent
 import android.net.Uri
@@ -34,8 +33,7 @@ class MyAccessibilityService : AccessibilityService() {
             Thread.sleep(1000)
     
             // "Durmaya Zorla" düğmesini bul ve tıkla
-            val service = getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
-            val rootNode = service.getRootInActiveWindow()
+            val rootNode = rootInActiveWindow
 
             if (rootNode != null) {
                 Log.d("Test", "Root node found, starting to search for force stop button")
