@@ -1,6 +1,5 @@
 package com.sharmadhiraj.installed_apps
 
-import android.os.Looper
 import android.os.Handler
 import android.util.Log
 import android.provider.Settings
@@ -206,22 +205,18 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
         }
     
         val accessibilityService = MyAccessibilityService()
-        val handler = Handler(Looper.getMainLooper())
         packages.forEachIndexed { index, packageName ->
             if (packageName != context!!.packageName) {
-                val result = accessibilityService.closeAppInBackground(context!!, packageName)
-                if (result) {
-                    Log.d("ClosedApp", "Successfully stopped $packageName")
-                } else {
-                    Log.e("ClosedApp", "Failed to stop $packageName")
-                }
-    
-                // Bekleme süresi
-                val delayTime = if (index == 0) 11111L else 5555L
-    
-                // Post işlemi gecikmeli başlat
-                handler.postDelayed({
-                    // Burada işlemi başlatıyoruz, gecikme sonrası çalışacak
+                Handler().postDelayed({
+                    val result = accessibilityService.closeAppInBackground(context!!, packageName)
+                    if (result) {
+                        Log.d("ClosedApp", "Successfully stopped $packageName")
+                    } else {
+                        Log.e("ClosedApp", "Failed to stop $packageName")
+                    }
+        
+                    // Bekleme süresi
+                    val delayTime = if (index == 0) 11111L else 5555L
                     Log.d("Delay", "Waiting for $delayTime milliseconds before next app.")
                 }, delayTime)
             }
