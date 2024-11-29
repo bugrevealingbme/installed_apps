@@ -1,5 +1,6 @@
 package com.sharmadhiraj.installed_apps
 
+import android.view.accessibility.AccessibilityEvent
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK
 import android.app.Activity
