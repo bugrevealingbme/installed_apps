@@ -73,7 +73,6 @@ private fun findForceStopButtonTest(root: AccessibilityNodeInfo): AccessibilityN
             Log.d("Test", "Is Checkable: ${child.isCheckable}")
             Log.d("Test", "Is Checked: ${child.isChecked}")
             Log.d("Test", "Is Password: ${child.isPassword}")
-            Log.d("Test", "Bounds: ${child.boundsInScreen}")
             
             // Buton metnini kontrol et
             if (text.contains("Force stop", ignoreCase = true)) {
