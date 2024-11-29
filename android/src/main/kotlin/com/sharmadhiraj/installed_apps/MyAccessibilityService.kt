@@ -18,15 +18,8 @@ class MyAccessibilityService : AccessibilityService() {
         // Servis kesintiye uğradığında yapılacak işler.
     }
 
-    fun closeAppInBackground(packageName: String): Boolean {
+    fun closeAppInBackground(context: Context, packageName: String): Boolean {
         try {
-            // Geçerli context üzerinden uygulama ayar ekranını aç
-            val context = applicationContext // Uygulamanın context'ini alıyoruz
-            if (context == null) {
-                Log.e("AccessibilityService", "Application context is null.")
-                return false
-            }
-    
             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
                 data = Uri.parse("package:$packageName")
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
