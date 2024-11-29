@@ -52,6 +52,8 @@ class MyAccessibilityService : AccessibilityService() {
             return false
         }
 
+        Thread.sleep(1000)
+        
         return true
     }
 
