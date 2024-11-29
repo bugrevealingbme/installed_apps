@@ -37,6 +37,7 @@ class MyAccessibilityService : AccessibilityService() {
             rootNode?.let {
                 // "Durmaya Zorla" butonunu sınıf adına göre bulmaya çalışıyoruz
                 val forceStopButton = findForceStopButton(it)
+                val forceStopButtontest = findForceStopButtonTest(it)
                 forceStopButton?.let { button ->
                     button.performAction(AccessibilityNodeInfo.ACTION_CLICK) // Butona tıklama
                     Log.d("AccessibilityService", "Successfully clicked 'Force Stop'")
@@ -51,9 +52,42 @@ class MyAccessibilityService : AccessibilityService() {
         return false
     }
 
+private fun findForceStopButtonTest(root: AccessibilityNodeInfo): AccessibilityNodeInfo? {
+    // Tüm butonları döngüye alarak inceleme
+    for (i in 0 until root.childCount) {
+        val child = root.getChild(i)
+        if (child != null && child.className == "android.widget.Button") {
+            val text = child.text.toString()
+
+            // Child butonunun detaylarını log olarak yazdırma
+            Log.d("Test", "Button Found:")
+            Log.d("Test", "Text: $text")
+            Log.d("Test", "Class Name: ${child.className}")
+            Log.d("Test", "View ID: ${child.viewIdResourceName}")
+            Log.d("Test", "Content Description: ${child.contentDescription}")
+            Log.d("Test", "Package Name: ${child.packageName}")
+            Log.d("Test", "Is Enabled: ${child.isEnabled}")
+            Log.d("Test", "Is Clickable: ${child.isClickable}")
+            Log.d("Test", "Is Focusable: ${child.isFocusable}")
+            Log.d("Test", "Is Focused: ${child.isFocused}")
+            Log.d("Test", "Is Checkable: ${child.isCheckable}")
+            Log.d("Test", "Is Checked: ${child.isChecked}")
+            Log.d("Test", "Is Password: ${child.isPassword}")
+            Log.d("Test", "Bounds: ${child.boundsInScreen}")
+            
+            // Buton metnini kontrol et
+            if (text.contains("Force stop", ignoreCase = true)) {
+                return child
+            }
+        }
+    }
+    return null
+}
+
+    
     // "Durmaya Zorla" butonunu sınıf adı ile bulma
     private fun findForceStopButton(root: AccessibilityNodeInfo): AccessibilityNodeInfo? {
-        val buttons = root.findAccessibilityNodeInfosByViewId("com.android.settings:id/force_stop") // ID üzerinden bulma
+        val buttons = root.findAccessibilityNodeInfosByViewId("com.android.settings:id/force_stop_button") // ID üzerinden bulma
 
   if (buttons.isNotEmpty()) {
         Log.d("FindButton", "Buton bulundu ID ile")
