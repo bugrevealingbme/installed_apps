@@ -34,10 +34,10 @@ class MyAccessibilityService : AccessibilityService() {
     
             // "Durmaya Zorla" düğmesini bul ve tıkla
             val rootNode = rootInActiveWindow
-            rootNode?.let {
-                // "Durmaya Zorla" butonunu sınıf adına göre bulmaya çalışıyoruz
-                val forceStopButton = findForceStopButton(it)
-                findForceStopButtonTest(it)
+            if (rootNode != null) {
+                Log.d("Test", "Root node found, starting to search for force stop button")
+                val forceStopButton = findForceStopButton(rootNode)
+                findForceStopButtonTest(rootNode) // Test fonksiyonunu çağırıyoruz
                 forceStopButton?.let { button ->
                     button.performAction(AccessibilityNodeInfo.ACTION_CLICK) // Butona tıklama
                     Log.d("AccessibilityService", "Successfully clicked 'Force Stop'")
@@ -45,7 +45,10 @@ class MyAccessibilityService : AccessibilityService() {
                     performGlobalAction(GLOBAL_ACTION_BACK) // Geri tuşuna basarak ekranı kapat
                     return true
                 }
+            } else {
+                Log.d("Test", "Root node is null!")
             }
+
         } catch (e: Exception) {
             Log.e("AccessibilityService", "Error stopping app: ${e.message}")
         }
@@ -53,6 +56,8 @@ class MyAccessibilityService : AccessibilityService() {
     }
 
 private fun findForceStopButtonTest(root: AccessibilityNodeInfo): AccessibilityNodeInfo? {
+    Log.d("Test", "findForceStopButtonTest findForceStopButtonTest findForceStopButtonTest")
+    
     // Tüm butonları döngüye alarak inceleme
     for (i in 0 until root.childCount) {
         val child = root.getChild(i)
