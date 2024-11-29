@@ -1,5 +1,6 @@
 package com.sharmadhiraj.installed_apps
 
+import android.os.Looper
 import android.os.Handler
 import android.util.Log
 import android.provider.Settings
