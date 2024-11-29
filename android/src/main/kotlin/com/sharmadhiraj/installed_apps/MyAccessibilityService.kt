@@ -14,7 +14,7 @@ class MyAccessibilityService : AccessibilityService() {
     private var cachedRootNode: AccessibilityNodeInfo? = null
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        val sourceNode = event.source
+        val sourceNode = event?.source
         if (sourceNode != null) {
             Log.d("AccessibilityService", "Source node found: $sourceNode")
             cachedRootNode = sourceNode
