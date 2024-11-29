@@ -24,7 +24,17 @@ class MyAccessibilityService : AccessibilityService() {
                 // "Force Stop" butonunu arıyoruz
                 val forceStopButton = findForceStopButtonGenerically(rootNode)
                 if (forceStopButton != null && forceStopButton.isEnabled) {
-                    forceStopButton.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+                    Log.d("AccessibilityService", "Node Text: ${forceStopButton.text}")
+                    Log.d("AccessibilityService", "Node Class: ${forceStopButton.className}")
+                    Log.d("AccessibilityService", "Node Clickable: ${forceStopButton.isClickable}")
+                    Log.d("AccessibilityService", "Node Visible: ${forceStopButton.isVisibleToUser}")
+                    Log.d("AccessibilityService", "Node Enabled: ${forceStopButton.isEnabled}")
+                    Log.d("AccessibilityService", "Node Parent: ${forceStopButton.parent}")
+                    
+                    val clickableNode = getClickableNode(forceStopButton)
+                    clickableNode?.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+
+                    //forceStopButton.performAction(AccessibilityNodeInfo.ACTION_CLICK)
                     Log.d("AccessibilityService", "'Force Stop' button clicked.")
                 } else {
                     //
@@ -75,7 +85,18 @@ class MyAccessibilityService : AccessibilityService() {
         return null
     }
 
-    
+    private fun getClickableNode(node: AccessibilityNodeInfo?): AccessibilityNodeInfo? {
+        var currentNode = node
+        while (currentNode != null) {
+            if (currentNode.isClickable) {
+                return currentNode
+            }
+            currentNode = currentNode.parent
+        }
+        return null
+    }
+
+
     private fun findForceStopButton(root: AccessibilityNodeInfo): AccessibilityNodeInfo? {
         // Önce View ID ile, ardından metin ile arıyoruz
         return root.findAccessibilityNodeInfosByViewId("com.android.settings:id/force_stop_button").firstOrNull()
