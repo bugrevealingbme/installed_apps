@@ -16,9 +16,8 @@ class MyAccessibilityService : AccessibilityService() {
         if (event == null) return
 
         // Event'in window content değişikliği ile ilgili olup olmadığını kontrol ediyoruz
-        /* if (event.eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED ||
-            event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) { */
-
+        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED ||
+            event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
             val rootNode = rootInActiveWindow
             if (rootNode != null) {
                 // "Force Stop" butonunu arıyoruz
@@ -28,14 +27,10 @@ class MyAccessibilityService : AccessibilityService() {
                     clickableNode?.performAction(AccessibilityNodeInfo.ACTION_CLICK)
                     
                     // "OK" popup'ını kontrol et ve tıkla
-                    Handler().postDelayed({
-                        // "OK" butonunu kontrol et ve tıkla
-                        val okButton = findButtonByText(rootNode, "OK")
-                        val clickableokButton = getClickableNode(okButton)
-                        if (clickableokButton != null) {
-                            clickableokButton.performAction(AccessibilityNodeInfo.ACTION_CLICK)
-                        }
-                    }, 1000)
+                    val delayTime = if (index == 0) 11111L else 5555L
+                    handler.postDelayed({
+                        // Bekleme sonrası yapılacak işlem burada yapılır
+                    }, delayTime) // Asenkron bekleme (Thread.sleep yerine)
                 } else {
                     //
                     Log.d("AccessibilityService", "No button amk $forceStopButton")
@@ -43,7 +38,7 @@ class MyAccessibilityService : AccessibilityService() {
             } else {
                 Log.d("AccessibilityService", "Root node is null.")
             }
-        //}
+        }
     }
 
     override fun onInterrupt() {}
