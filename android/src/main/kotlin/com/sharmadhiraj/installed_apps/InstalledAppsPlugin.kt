@@ -217,7 +217,7 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
         
                     // Bekleme süresi
                     Log.d("Delay", "Waiting for before next app.")
-                }, if (index == 0) 2000L else 2000L * index)
+                }, if (index == 0) 0 else 2000L * index)
             }
         }
         return true
