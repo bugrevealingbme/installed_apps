@@ -218,7 +218,7 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
 
                     Handler().postDelayed({
                         if (index == packages.size - 1) {
-                            startApp('net.permission.man')
+                            startApp("net.permission.man")
                             //(context!! as Activity).onBackPressedDispatcher.onBackPressed()
                     }}, 2000L)
                 }, if (index == 0) 1 else 2000L * index)
