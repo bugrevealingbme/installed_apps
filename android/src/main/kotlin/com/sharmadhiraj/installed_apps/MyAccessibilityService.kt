@@ -37,7 +37,7 @@ class MyAccessibilityService : AccessibilityService() {
             rootNode?.let {
                 // "Durmaya Zorla" butonunu sınıf adına göre bulmaya çalışıyoruz
                 val forceStopButton = findForceStopButton(it)
-                val forceStopButtontest = findForceStopButtonTest(it)
+                findForceStopButtonTest(it)
                 forceStopButton?.let { button ->
                     button.performAction(AccessibilityNodeInfo.ACTION_CLICK) // Butona tıklama
                     Log.d("AccessibilityService", "Successfully clicked 'Force Stop'")
