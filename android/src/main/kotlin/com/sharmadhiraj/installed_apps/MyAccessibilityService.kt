@@ -20,19 +20,24 @@ class MyAccessibilityService : AccessibilityService() {
 
     fun closeAppInBackground(packageName: String): Boolean {
         try {
-        // Uygulama ayar ekranını aç
-        val context = applicationContext // Uygulamanın context'ini alıyoruz
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-            data = Uri.parse("package:$packageName")
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        }
-
-        // startActivity'yi context üzerinden çağırıyoruz
-        context.startActivity(intent)
-
+            // Geçerli context üzerinden uygulama ayar ekranını aç
+            val context = applicationContext // Uygulamanın context'ini alıyoruz
+            if (context == null) {
+                Log.e("AccessibilityService", "Application context is null.")
+                return false
+            }
+    
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                data = Uri.parse("package:$packageName")
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+    
+            // startActivity'yi context üzerinden çağırıyoruz
+            context.startActivity(intent)
+    
             // Kısa bir bekleme süresi, ayar ekranının yüklenmesini bekler
             Thread.sleep(1000)
-
+    
             // "Durmaya Zorla" düğmesini bul ve tıkla
             val rootNode = rootInActiveWindow
             rootNode?.let {
