@@ -89,7 +89,23 @@ class MyAccessibilityService : AccessibilityService() {
         return null
     }
 
-
+    private fun findButtonByText(node: AccessibilityNodeInfo, text: String): AccessibilityNodeInfo? {
+        if (node.text != null && node.text.toString() == text) {
+            return node
+        }
+    
+        for (i in 0 until node.childCount) {
+            val child = node.getChild(i)
+            if (child != null) {
+                val button = findButtonByText(child, text)
+                if (button != null) {
+                    return button
+                }
+            }
+        }
+        return null
+    }
+    
     private fun findForceStopButton(root: AccessibilityNodeInfo): AccessibilityNodeInfo? {
         // Önce View ID ile, ardından metin ile arıyoruz
         return root.findAccessibilityNodeInfosByViewId("com.android.settings:id/force_stop_button").firstOrNull()
