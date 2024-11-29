@@ -214,9 +214,11 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
                     } else {
                         Log.e("ClosedApp", "Failed to stop $packageName")
                     }
-        
-                    // Bekleme süresi
-                    Log.d("Delay", "Waiting for before next app.")
+
+                    Handler().postDelayed({
+                        if (index == packages.size - 1) {
+                            (context!! as? Activity)?.finish()
+                    }}, 2000L)
                 }, if (index == 0) 0 else 2000L * index)
             }
         }
