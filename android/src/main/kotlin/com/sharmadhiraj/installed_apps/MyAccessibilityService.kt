@@ -42,11 +42,15 @@ class MyAccessibilityService : AccessibilityService() {
                 findForceStopButtonTest(rootNode) // Test fonksiyonunu çağırıyoruz
         
                 forceStopButton?.let { button ->
-                    button.performAction(AccessibilityNodeInfo.ACTION_CLICK) // Butona tıklama
+                    // Butona tıklıyoruz
+                    button.performAction(AccessibilityNodeInfo.ACTION_CLICK)
                     Log.d("AccessibilityService", "Successfully clicked 'Force Stop'")
-                    Thread.sleep(500) // Tıklamanın işlenmesini bekle
-                    performGlobalAction(GLOBAL_ACTION_BACK) // Geri tuşuna basarak ekranı kapat
+        
+                    // Geri tuşuna basıyoruz
+                    performGlobalAction(GLOBAL_ACTION_BACK)
                     return true
+                } ?: run {
+                    Log.d("Test", "Force Stop button not found")
                 }
             } else {
                 Log.d("Test", "Root node is null!")
