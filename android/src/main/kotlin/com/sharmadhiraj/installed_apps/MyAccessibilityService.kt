@@ -16,8 +16,8 @@ class MyAccessibilityService : AccessibilityService() {
         if (event == null) return
 
         // Event'in window content değişikliği ile ilgili olup olmadığını kontrol ediyoruz
-        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED ||
-            event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+        /* if (event.eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED ||
+            event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) { */
 
             val rootNode = rootInActiveWindow
             if (rootNode != null) {
@@ -43,7 +43,7 @@ class MyAccessibilityService : AccessibilityService() {
             } else {
                 Log.d("AccessibilityService", "Root node is null.")
             }
-        }
+        //}
     }
 
     override fun onInterrupt() {}
