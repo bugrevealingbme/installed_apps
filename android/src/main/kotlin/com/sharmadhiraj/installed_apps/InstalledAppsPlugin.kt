@@ -214,9 +214,9 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
                 }
 
                 if (index == 0) {
-                    Thread.sleep(5000)
+                    Thread.sleep(11111)
                 } else {
-                    Thread.sleep(1250)
+                    Thread.sleep(5555)
                 }
             }
         }
