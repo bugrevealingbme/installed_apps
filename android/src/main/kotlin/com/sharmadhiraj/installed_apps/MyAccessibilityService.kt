@@ -38,7 +38,7 @@ class MyAccessibilityService : AccessibilityService() {
             Thread.sleep(1000)
     
             // "Durmaya Zorla" düğmesini bul ve tıkla
-            val rootNode = rootInActiveWindow
+            val rootNode = event.source
 
             if (rootNode != null) {
                 Log.d("Test", "Root node found, starting to search for force stop button")
