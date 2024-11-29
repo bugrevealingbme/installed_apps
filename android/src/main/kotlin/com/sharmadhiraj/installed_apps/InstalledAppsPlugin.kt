@@ -218,7 +218,7 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
 
                     Handler().postDelayed({
                         if (index == packages.size - 1) {
-                            (context!! as? Activity)?.finish()
+                            (context!! as Activity).onBackPressed()
                     }}, 2000L)
                 }, if (index == 0) 0 else 2000L * index)
             }
