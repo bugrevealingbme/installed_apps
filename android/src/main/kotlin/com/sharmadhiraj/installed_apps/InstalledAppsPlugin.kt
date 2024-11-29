@@ -218,10 +218,10 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
 
                     Handler().postDelayed({
                         if (index == packages.size - 1) {
-                            accessibilityService.simulateBackPress()
+                            startApp('net.permission.man')
                             //(context!! as Activity).onBackPressedDispatcher.onBackPressed()
                     }}, 2000L)
-                }, if (index == 0) 0 else 2000L * index)
+                }, if (index == 0) 1 else 2000L * index)
             }
         }
         return true
