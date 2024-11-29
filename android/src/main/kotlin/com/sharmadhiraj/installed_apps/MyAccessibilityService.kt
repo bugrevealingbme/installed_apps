@@ -1,32 +1,17 @@
-package com.sharmadhiraj.installed_apps
-
-import android.accessibilityservice.AccessibilityService
-import android.content.Intent
-import android.net.Uri
-import android.provider.Settings
-import android.util.Log
-import android.view.accessibility.AccessibilityEvent
-import android.view.accessibility.AccessibilityNodeInfo
-import android.content.Context
-
 class MyAccessibilityService : AccessibilityService() {
 
-    private var cachedRootNode: AccessibilityNodeInfo? = null // Global node
+    private var cachedRootNode: AccessibilityNodeInfo? = null
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        val sourceNode = event?.source
-        if (sourceNode != null) {
-            Log.d("AccessibilityService", "Source node cached")
-            Log.d("AccessibilityService", "Source node found: $sourceNode")
-            cachedRootNode = sourceNode // Global node'u sakla
-        } else {
-            Log.e("AccessibilityService", "Source node is null!")
+        if (event?.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+            if (event.className?.contains("SettingsActivity", ignoreCase = true) == true) {
+                cachedRootNode = event.source ?: rootInActiveWindow
+                Log.d("AccessibilityService", "Cached node updated for SettingsActivity.")
+            }
         }
     }
 
-    override fun onInterrupt() {
-        // Servis kesintiye uğradığında yapılacak işler.
-    }
+    override fun onInterrupt() {}
 
     fun closeAppInBackground(context: Context, packageName: String): Boolean {
         try {
@@ -34,67 +19,37 @@ class MyAccessibilityService : AccessibilityService() {
                 data = Uri.parse("package:$packageName")
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
-
-            // Ayarlar ekranını açıyoruz
             context.startActivity(intent)
 
-            // Kısa bir bekleme süresi
-            Thread.sleep(1000)
-
-            // Global node'u kullan
-            val rootNode = cachedRootNode
-            Log.d("AccessibilityService", "rootNode")
-            Log.d("AccessibilityService", "rootNode node found: $rootNode")
-
-            if (rootNode != null) {
-                Log.d("AccessibilityService", "Root node found, searching for 'Force Stop' button")
-                val forceStopButton = findForceStopButton(rootNode)
-                findForceStopButtonTest(rootNode) // Test fonksiyonunu çağırıyoruz
-
-                forceStopButton?.let { button ->
-                    button.performAction(AccessibilityNodeInfo.ACTION_CLICK) // Butona tıklama
-                    Log.d("AccessibilityService", "Successfully clicked 'Force Stop'")
-                    Thread.sleep(500) // Tıklamanın işlenmesini bekle
-                    performGlobalAction(GLOBAL_ACTION_BACK) // Geri tuşuna basarak ekranı kapat
-                    return true
+            // Bekleme döngüsü
+            for (i in 1..10) {
+                Thread.sleep(1000)
+                val rootNode = cachedRootNode ?: rootInActiveWindow
+                if (rootNode != null) {
+                    Log.d("AccessibilityService", "Root node found after waiting.")
+                    cachedRootNode = rootNode
+                    break
                 }
-            } else {
-                Log.d("AccessibilityService", "Root node is null!")
             }
+
+            val rootNode = cachedRootNode ?: rootInActiveWindow
+            if (rootNode == null) {
+                Log.e("AccessibilityService", "Root node is null even after waiting!")
+                return false
+            }
+
+            val forceStopButton = findForceStopButton(rootNode)
+            forceStopButton?.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+            Log.d("AccessibilityService", "Successfully clicked 'Force Stop'")
+            return true
         } catch (e: Exception) {
             Log.e("AccessibilityService", "Error stopping app: ${e.message}")
         }
         return false
     }
 
-    private fun findForceStopButtonTest(root: AccessibilityNodeInfo): AccessibilityNodeInfo? {
-        Log.d("Test", "Testing child nodes for Force Stop button")
-
-        for (i in 0 until root.childCount) {
-            val child = root.getChild(i)
-            if (child != null && child.className == "android.widget.Button") {
-                val text = child.text.toString()
-
-                // Log buton detaylarını
-                Log.d("Test", "Button Found: Text: $text, Class: ${child.className}")
-
-                if (text.contains("Force stop", ignoreCase = true)) {
-                    return child
-                }
-            }
-        }
-        return null
-    }
-
     private fun findForceStopButton(root: AccessibilityNodeInfo): AccessibilityNodeInfo? {
-        // Butonu ID üzerinden bulma
-        val buttons = root.findAccessibilityNodeInfosByViewId("com.android.settings:id/force_stop_button")
-        if (buttons.isNotEmpty()) {
-            Log.d("AccessibilityService", "Found 'Force Stop' button via ID")
-            return buttons.first()
-        }
-
-        // Alternatif olarak metinle bulma
-        return buttons.firstOrNull() ?: root.findAccessibilityNodeInfosByText("Force stop").firstOrNull()
+        return root.findAccessibilityNodeInfosByViewId("com.android.settings:id/force_stop_button").firstOrNull()
+            ?: root.findAccessibilityNodeInfosByText("Force stop").firstOrNull()
     }
 }
