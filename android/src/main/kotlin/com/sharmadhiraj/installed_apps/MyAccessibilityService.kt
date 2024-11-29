@@ -12,7 +12,12 @@ import android.content.Context
 class MyAccessibilityService : AccessibilityService() {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        // Gerekli olayları işlemek için buraya ekleme yapabilirsiniz.
+        val sourceNode = event?.source
+        if (sourceNode != null) {
+            Log.d("AccessibilityService", "Source node found: $sourceNode")
+        } else {
+            Log.e("AccessibilityService", "Source node is null!")
+        }
     }
 
     override fun onInterrupt() {
