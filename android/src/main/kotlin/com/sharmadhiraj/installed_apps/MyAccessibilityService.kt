@@ -11,7 +11,7 @@ import android.content.Context
 
 class MyAccessibilityService : AccessibilityService() {
 
-    internal var cachedRootNode: AccessibilityNodeInfo? = null
+    public var cachedRootNode: AccessibilityNodeInfo? = null
         
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         val sourceNode = event?.source
