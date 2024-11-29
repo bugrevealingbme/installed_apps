@@ -205,6 +205,7 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
         }
     
         val accessibilityService = MyAccessibilityService()
+        val handler = Handler(Looper.getMainLooper())
         packages.forEachIndexed { index, packageName ->
             if (packageName != context!!.packageName) {
                 val result = accessibilityService.closeAppInBackground(context!!, packageName)
@@ -213,9 +214,15 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
                 } else {
                     Log.e("ClosedApp", "Failed to stop $packageName")
                 }
-
+    
+                // Bekleme süresi
                 val delayTime = if (index == 0) 11111L else 5555L
-                Handler().postDelayed({}, delayTime) // Asenkron bekleme (Thread.sleep yerine)
+    
+                // Post işlemi gecikmeli başlat
+                handler.postDelayed({
+                    // Burada işlemi başlatıyoruz, gecikme sonrası çalışacak
+                    Log.d("Delay", "Waiting for $delayTime milliseconds before next app.")
+                }, delayTime)
             }
         }
         return true
