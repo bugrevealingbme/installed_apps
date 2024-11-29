@@ -39,7 +39,7 @@ class MyAccessibilityService : AccessibilityService() {
     override fun onInterrupt() {}
 
     // Ayar ekranını açmak için kullanılır
-    fun closeAppInBackground(context: Context, packageName: String) {
+    fun closeAppInBackground(context: Context, packageName: String): Boolean {
         try {
             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
                 data = Uri.parse("package:$packageName")
