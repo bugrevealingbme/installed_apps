@@ -204,7 +204,7 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
         }
     
         val accessibilityService = MyAccessibilityService()
-        packages.forEach { packageName ->
+        forEachIndexed { index, packageName ->
             if (packageName != context!!.packageName) {
                 val result = accessibilityService.closeAppInBackground(context!!, packageName)
                 if (result) {
@@ -212,7 +212,12 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
                 } else {
                     Log.e("ClosedApp", "Failed to stop $packageName")
                 }
-                Thread.sleep(1000)
+
+                if (index == 0) {
+                    Thread.sleep(5000)
+                } else {
+                    Thread.sleep(1250)
+                }
             }
         }
         return true
