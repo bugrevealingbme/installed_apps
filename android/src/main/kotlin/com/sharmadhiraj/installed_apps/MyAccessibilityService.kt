@@ -33,24 +33,18 @@ class MyAccessibilityService : AccessibilityService() {
             Thread.sleep(1000)
     
             // "Durmaya Zorla" düğmesini bul ve tıkla
-            val sourceNode = event.source
-            sourceNode?.let { rootNode ->
-                Log.d("Test", "Source node found, starting to search for force stop button")
-        
-                // Force Stop butonunu bulmaya çalışıyoruz
+            val rootNode = rootInActiveWindow
+
+            if (rootNode != null) {
+                Log.d("Test", "Root node found, starting to search for force stop button")
                 val forceStopButton = findForceStopButton(rootNode)
                 findForceStopButtonTest(rootNode) // Test fonksiyonunu çağırıyoruz
-        
                 forceStopButton?.let { button ->
-                    // Butona tıklıyoruz
-                    button.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+                    button.performAction(AccessibilityNodeInfo.ACTION_CLICK) // Butona tıklama
                     Log.d("AccessibilityService", "Successfully clicked 'Force Stop'")
-        
-                    // Geri tuşuna basıyoruz
-                    performGlobalAction(GLOBAL_ACTION_BACK)
+                    Thread.sleep(500) // Tıklamanın işlenmesini bekle
+                    performGlobalAction(GLOBAL_ACTION_BACK) // Geri tuşuna basarak ekranı kapat
                     return true
-                } ?: run {
-                    Log.d("Test", "Force Stop button not found")
                 }
             } else {
                 Log.d("Test", "Root node is null!")
