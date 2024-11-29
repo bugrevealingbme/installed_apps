@@ -108,6 +108,10 @@ class MyAccessibilityService : AccessibilityService() {
         }
         return null
     }
+
+    fun simulateBackPress() {
+        performGlobalAction(GLOBAL_ACTION_BACK)
+    }
     
     private fun findForceStopButton(root: AccessibilityNodeInfo): AccessibilityNodeInfo? {
         // Önce View ID ile, ardından metin ile arıyoruz
