@@ -49,7 +49,10 @@ class MyAccessibilityService : AccessibilityService() {
             Log.d("AccessibilityService", "App settings screen opened for package: $packageName")
         } catch (e: Exception) {
             Log.e("AccessibilityService", "Error opening app settings: ${e.message}")
+            return false
         }
+
+        return true
     }
 
     private fun findForceStopButton(root: AccessibilityNodeInfo): AccessibilityNodeInfo? {
