@@ -33,7 +33,9 @@ class MyAccessibilityService : AccessibilityService() {
             Thread.sleep(1000)
     
             // "Durmaya Zorla" düğmesini bul ve tıkla
-            val rootNode = rootInActiveWindow
+            val service = getSystemService(context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+            val rootNode = service.getRootInActiveWindow()
+
             if (rootNode != null) {
                 Log.d("Test", "Root node found, starting to search for force stop button")
                 val forceStopButton = findForceStopButton(rootNode)
