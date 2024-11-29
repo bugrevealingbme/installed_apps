@@ -215,7 +215,7 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
                 }
 
                 val delayTime = if (index == 0) 11111L else 5555L
-                handler.postDelayed({}, delayTime) // Asenkron bekleme (Thread.sleep yerine)
+                Handler().postDelayed({}, delayTime) // Asenkron bekleme (Thread.sleep yerine)
             }
         }
         return true
