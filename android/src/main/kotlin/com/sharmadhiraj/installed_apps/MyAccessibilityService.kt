@@ -53,13 +53,13 @@ class MyAccessibilityService : AccessibilityService() {
 
     // "Durmaya Zorla" butonunu sınıf adı ile bulma
     private fun findForceStopButton(root: AccessibilityNodeInfo): AccessibilityNodeInfo? {
-        val buttons = root.findAccessibilityNodeInfosByViewId("com.android.settings:id/force_stop_button") // ID üzerinden bulma
+        val buttons = root.findAccessibilityNodeInfosByViewId("com.android.settings:id/force_stop") // ID üzerinden bulma
 
   if (buttons.isNotEmpty()) {
         Log.d("FindButton", "Buton bulundu ID ile")
         return buttons.first()
     }
         
-        return buttons.firstOrNull() ?: root.findAccessibilityNodeInfosByText("Durmaya Zorla").firstOrNull()
+        return buttons.firstOrNull() ?: root.findAccessibilityNodeInfosByText("Force stop").firstOrNull()
     }
 }
