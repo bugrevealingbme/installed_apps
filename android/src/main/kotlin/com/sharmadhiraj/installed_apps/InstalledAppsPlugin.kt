@@ -190,7 +190,7 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
             context!!.contentResolver,
             Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
         )
-        val myServiceName = "${context!!.packageName}/net.permission.man.MyAccessibilityService"
+        val myServiceName = "${context!!.packageName}/com.sharmadhiraj.installed_apps.MyAccessibilityService"
     
         // Kontrol: MyAccessibilityService etkin mi?
         return enabledServices?.contains(myServiceName) == true &&
