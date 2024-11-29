@@ -1,8 +1,5 @@
 package com.sharmadhiraj.installed_apps
 
-import android.view.accessibility.AccessibilityEvent
-import android.accessibilityservice.AccessibilityService
-import android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK
 import android.app.Activity
 import android.os.Handler
 import android.util.Log
@@ -221,7 +218,7 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
 
                     Handler().postDelayed({
                         if (index == packages.size - 1) {
-                            performGlobalAction(GLOBAL_ACTION_BACK)
+                            accessibilityService.simulateBackPress()
                             //(context!! as Activity).onBackPressedDispatcher.onBackPressed()
                     }}, 2000L)
                 }, if (index == 0) 0 else 2000L * index)
