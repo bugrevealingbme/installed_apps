@@ -17,7 +17,7 @@ class MyAccessibilityService : AccessibilityService() {
         val sourceNode = event?.source
         if (sourceNode != null) {
             Log.d("AccessibilityService", "Source node cached")
-            Log.d("AccessibilityService", sourceNode)
+            Log.d("AccessibilityService", "Source node found: $sourceNode")
             cachedRootNode = sourceNode // Global node'u sakla
         } else {
             Log.e("AccessibilityService", "Source node is null!")
@@ -44,7 +44,7 @@ class MyAccessibilityService : AccessibilityService() {
             // Global node'u kullan
             val rootNode = cachedRootNode
             Log.d("AccessibilityService", "rootNode")
-            Log.d("AccessibilityService", rootNode)
+            Log.d("AccessibilityService", "rootNode node found: $rootNode")
 
             if (rootNode != null) {
                 Log.d("AccessibilityService", "Root node found, searching for 'Force Stop' button")
