@@ -60,8 +60,8 @@ class MyAccessibilityService : AccessibilityService() {
         for (i in 0 until root.childCount) {
             val child = root.getChild(i)
             if (child != null) {
-                // Eğer düğme metni "Force stop" içeriyorsa ve tıklanabiliyorsa
-                if (child.isClickable && child.text?.toString()?.contains("Force stop", ignoreCase = true) == true) {
+                if (child.text?.toString()?.contains("Force stop", ignoreCase = true) == true) {
+                    Log.d("AccessibilityService", "Found 'Force Stop' button: ${child.text}")
                     return child
                 }
     
@@ -74,6 +74,7 @@ class MyAccessibilityService : AccessibilityService() {
         }
         return null
     }
+
     
     private fun findForceStopButton(root: AccessibilityNodeInfo): AccessibilityNodeInfo? {
         // Önce View ID ile, ardından metin ile arıyoruz
