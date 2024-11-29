@@ -1,5 +1,6 @@
 package com.sharmadhiraj.installed_apps
 
+import android.accessibilityservice.AccessibilityManager
 import android.accessibilityservice.AccessibilityService
 import android.content.Intent
 import android.net.Uri
