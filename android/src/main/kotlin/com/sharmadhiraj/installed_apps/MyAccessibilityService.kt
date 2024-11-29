@@ -34,7 +34,7 @@ class MyAccessibilityService : AccessibilityService() {
             Thread.sleep(1000)
     
             // "Durmaya Zorla" düğmesini bul ve tıkla
-            val service = getSystemService(context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+            val service = getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
             val rootNode = service.getRootInActiveWindow()
 
             if (rootNode != null) {
