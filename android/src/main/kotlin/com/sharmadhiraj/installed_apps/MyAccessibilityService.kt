@@ -20,12 +20,15 @@ class MyAccessibilityService : AccessibilityService() {
 
     fun closeAppInBackground(packageName: String): Boolean {
         try {
-            // Uygulama ayar ekranını aç
-            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                data = Uri.parse("package:$packageName")
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
-            startActivity(intent)
+        // Uygulama ayar ekranını aç
+        val context = applicationContext // Uygulamanın context'ini alıyoruz
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            data = Uri.parse("package:$packageName")
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+
+        // startActivity'yi context üzerinden çağırıyoruz
+        context.startActivity(intent)
 
             // Kısa bir bekleme süresi, ayar ekranının yüklenmesini bekler
             Thread.sleep(1000)
