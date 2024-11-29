@@ -27,13 +27,13 @@ class MyAccessibilityService : AccessibilityService() {
                     clickableNode?.performAction(AccessibilityNodeInfo.ACTION_CLICK)
                     
                     // "OK" popup'ını kontrol et ve tıkla
-                    Handler().postDelayed({
+                    //Handler().postDelayed({
                         val okButton = findButtonByText(rootNode, "OK")
                         val clickableokButton = getClickableNode(okButton)
                         if (clickableokButton != null) {
                             clickableokButton.performAction(AccessibilityNodeInfo.ACTION_CLICK)
                         }
-                    }, 1000)
+                    //}, 1000)
                 } else {
                     //
                     Log.d("AccessibilityService", "No button amk $forceStopButton")
