@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import android.content.Context
+import android.os.Handler
 
 class MyAccessibilityService : AccessibilityService() {
 
