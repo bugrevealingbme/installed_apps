@@ -212,6 +212,7 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
                 } else {
                     Log.e("ClosedApp", "Failed to stop $packageName")
                 }
+                Thread.sleep(1000)
             }
         }
         return true
