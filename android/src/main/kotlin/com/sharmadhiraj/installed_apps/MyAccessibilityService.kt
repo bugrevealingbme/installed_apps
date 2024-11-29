@@ -14,8 +14,13 @@ class MyAccessibilityService : AccessibilityService() {
     private var cachedRootNode: AccessibilityNodeInfo? = null
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        cachedRootNode = event.source ?: rootInActiveWindow
-        Log.d("AccessibilityService", "Cached node updated for SettingsActivity.")
+        val sourceNode = event.source
+        if (sourceNode != null) {
+            Log.d("AccessibilityService", "Source node found: $sourceNode")
+            cachedRootNode = sourceNode
+        } else {
+            Log.e("AccessibilityService", "Source node is null!")
+        }
     }
 
     override fun onInterrupt() {}
