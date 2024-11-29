@@ -25,8 +25,9 @@ class MyAccessibilityService : AccessibilityService() {
                 if (forceStopButton != null && forceStopButton.isEnabled) {
                     val clickableNode = getClickableNode(forceStopButton)
                     clickableNode?.performAction(AccessibilityNodeInfo.ACTION_CLICK)
-
+                    
                     // "OK" popup'ını kontrol et ve tıkla
+                    Thread.sleep(2000)
                     val okButton = findButtonByText(rootNode, "OK")
                     if (okButton != null && okButton.isEnabled) {
                         okButton.performAction(AccessibilityNodeInfo.ACTION_CLICK)
