@@ -20,22 +20,17 @@ class MyAccessibilityService : AccessibilityService() {
 
             val rootNode = rootInActiveWindow
             if (rootNode != null) {
-                Log.d("AccessibilityService", "Root node detected. Checking for 'Force Stop' button.")
                 // "Force Stop" butonunu arıyoruz
                 val forceStopButton = findForceStopButtonGenerically(rootNode)
                 if (forceStopButton != null && forceStopButton.isEnabled) {
-                    Log.d("AccessibilityService", "Node Text: ${forceStopButton.text}")
-                    Log.d("AccessibilityService", "Node Class: ${forceStopButton.className}")
-                    Log.d("AccessibilityService", "Node Clickable: ${forceStopButton.isClickable}")
-                    Log.d("AccessibilityService", "Node Visible: ${forceStopButton.isVisibleToUser}")
-                    Log.d("AccessibilityService", "Node Enabled: ${forceStopButton.isEnabled}")
-                    Log.d("AccessibilityService", "Node Parent: ${forceStopButton.parent}")
-                    
                     val clickableNode = getClickableNode(forceStopButton)
                     clickableNode?.performAction(AccessibilityNodeInfo.ACTION_CLICK)
 
-                    //forceStopButton.performAction(AccessibilityNodeInfo.ACTION_CLICK)
-                    Log.d("AccessibilityService", "'Force Stop' button clicked.")
+                    // "OK" popup'ını kontrol et ve tıkla
+                    val okButton = findButtonByText(rootNode, "OK")
+                    if (okButton != null && okButton.isEnabled) {
+                        okButton.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+                    }                
                 } else {
                     //
                     Log.d("AccessibilityService", "No button amk $forceStopButton")
@@ -60,8 +55,6 @@ class MyAccessibilityService : AccessibilityService() {
         } catch (e: Exception) {
             Log.e("AccessibilityService", "Error opening app settings: ${e.message}")
         }
-
-        Thread.sleep(1000)
         
         return true
     }
