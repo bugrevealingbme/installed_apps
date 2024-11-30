@@ -207,21 +207,20 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
     
     private var closeAppsCancelled = false
     
-    private fun closeBackgroundApps(packages: List<String>, callback: (Boolean) -> Unit) {
+    private fun closeBackgroundApps(packages: List<String>, callback: (Boolean) -> Unit): Boolean {
         if (!isAccessibilityPermissionGranted()) {
             Log.e("AccessibilityPermission", "Accessibility permission is not granted.")
             callback(false)
             return
         }
     
-        closeAppsCancelled = false // Reset cancellation state
+        closeAppsCancelled = false
     
         val accessibilityService = MyAccessibilityService()
         val handler = Handler()
     
         packages.forEachIndexed { index, packageName ->
             if (closeAppsCancelled) {
-                Log.d("CloseApps", "Operation cancelled.")
                 callback(false)
                 return
             }
@@ -229,21 +228,15 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
             if (packageName != context!!.packageName) {
                 handler.postDelayed({
                     if (closeAppsCancelled) {
-                        Log.d("CloseApps", "Operation cancelled.")
                         callback(false)
-                        return@postDelayed
+                        return
                     }
     
-                    val result = accessibilityService.closeAppInBackground(context!!, packageName)
-                    if (result) {
-                        Log.d("ClosedApp", "Successfully stopped $packageName")
-                    } else {
-                        Log.e("ClosedApp", "Failed to stop $packageName")
-                    }
+                    accessibilityService.closeAppInBackground(context!!, packageName)
     
                     if (index == packages.size - 1) {
-                        val startResult = startApp("net.permission.man")
-                        callback(startResult)
+                        startApp("net.permission.man")
+                        callback(true)
                     }
     
                 }, if (index == 0) 1 else 2000L * index)
@@ -251,8 +244,10 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
         }
     }
     
-    fun cancelCloseBackgroundApps() {
+    fun cancelCloseBackgroundApps(): Boolean {
         closeAppsCancelled = true
+        startApp("net.permission.man")
+        return true
     }
 
     private fun isUsageAccessGranted(): Boolean {
