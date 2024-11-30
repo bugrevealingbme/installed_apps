@@ -354,7 +354,7 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
         runningProcesses?.forEach { processInfo ->
             processInfo.pkgList?.forEach { packageName ->
                 try {
-                    if (!runningApps.any { it["packageName"] == packageName }) { // Eğer daha önce eklenmediyse
+                    if ((!runningApps.any { it["packageName"] == packageName }) && && (packageName != context!!.packageName)) { // Eğer daha önce eklenmediyse
                         val appInfo = packageManager.getApplicationInfo(packageName, 0)
                         val isSystemApp = (appInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0
                         if (!excludeSystemApps || !isSystemApp) {
