@@ -267,7 +267,8 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
     fun cancelCloseBackgroundApps(): Boolean {
         closeAppsCancelled = true
         cancelAllPendingTasks() 
-
+        handler.removeCallbacks()
+        
         startApp("net.permission.man")
         return true
     }
