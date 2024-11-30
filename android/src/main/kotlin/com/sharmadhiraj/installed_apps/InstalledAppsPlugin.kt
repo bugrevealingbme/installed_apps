@@ -240,7 +240,7 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
     
                     if (index == packages.size - 1 && !closeAppsCancelled) {
                         val finalRunnable = Runnable {
-                            startApp("net.permission.man")
+                            startApp(context!!.packageName)
                             callback(true)
                         }
                         pendingRunnables.add(finalRunnable) // Bu görevi de ekle
@@ -267,7 +267,7 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
         cancelAllPendingTasks() 
         handler.removeCallbacksAndMessages(null);
 
-        startApp("net.permission.man")
+        startApp(context!!.packageName)
         return true
     }
     
