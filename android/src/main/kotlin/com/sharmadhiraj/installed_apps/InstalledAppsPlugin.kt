@@ -154,10 +154,16 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
 
             "closeBackgroundApps" -> {
                 val packageNames: List<String> = call.argument<List<String>>("package_names") ?: emptyList()
-                val success = closeBackgroundApps(packageNames)
-                result.success(success)
+                closeBackgroundApps(packageNames) { success ->
+                    result.success(success)
+                }
             }
-            
+
+            "cancelCloseBackgroundApps" -> {
+                cancelCloseBackgroundApps()
+                result.success(true)
+            }
+             
              "openUsageAccessSettings" -> {
                 openUsageAccessSettings()
                 result.success(null)
@@ -199,32 +205,54 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
                 accessibilityManager.isEnabled
     }
     
-    private fun closeBackgroundApps(packages: List<String>): Boolean {
+    private var closeAppsCancelled = false
+    
+    private fun closeBackgroundApps(packages: List<String>, callback: (Boolean) -> Unit) {
         if (!isAccessibilityPermissionGranted()) {
             Log.e("AccessibilityPermission", "Accessibility permission is not granted.")
-            return false
+            callback(false)
+            return
         }
     
+        closeAppsCancelled = false // Reset cancellation state
+    
         val accessibilityService = MyAccessibilityService()
+        val handler = Handler()
+    
         packages.forEachIndexed { index, packageName ->
+            if (closeAppsCancelled) {
+                Log.d("CloseApps", "Operation cancelled.")
+                callback(false)
+                return
+            }
+    
             if (packageName != context!!.packageName) {
-                Handler().postDelayed({
+                handler.postDelayed({
+                    if (closeAppsCancelled) {
+                        Log.d("CloseApps", "Operation cancelled.")
+                        callback(false)
+                        return@postDelayed
+                    }
+    
                     val result = accessibilityService.closeAppInBackground(context!!, packageName)
                     if (result) {
                         Log.d("ClosedApp", "Successfully stopped $packageName")
                     } else {
                         Log.e("ClosedApp", "Failed to stop $packageName")
                     }
-
-                    Handler().postDelayed({
-                        if (index == packages.size - 1) {
-                            startApp("net.permission.man")
-                            //(context!! as Activity).onBackPressedDispatcher.onBackPressed()
-                    }}, 2000L)
+    
+                    if (index == packages.size - 1) {
+                        val startResult = startApp("net.permission.man")
+                        callback(startResult)
+                    }
+    
                 }, if (index == 0) 1 else 2000L * index)
             }
         }
-        return true
+    }
+    
+    fun cancelCloseBackgroundApps() {
+        closeAppsCancelled = true
     }
 
     private fun isUsageAccessGranted(): Boolean {
