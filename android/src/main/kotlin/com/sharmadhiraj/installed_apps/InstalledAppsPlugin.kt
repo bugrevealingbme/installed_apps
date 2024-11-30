@@ -40,7 +40,10 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
     companion object {
 
         var context: Context? = null
-
+         var closeAppsCancelled = false
+         val handler = Handler()
+         val pendingRunnables = mutableListOf<Runnable>()
+         
         @JvmStatic
         fun registerWith(registrar: Registrar) {
             context = registrar.context()
@@ -205,10 +208,6 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
         return enabledServices?.contains(myServiceName) == true &&
                 accessibilityManager.isEnabled
     }
-
-    private var closeAppsCancelled = false
-    private val handler = Handler()
-    private val pendingRunnables = mutableListOf<Runnable>()
     
     private fun closeBackgroundApps(packages: List<String>, callback: (Boolean) -> Unit): Boolean {
         if (!isAccessibilityPermissionGranted()) {
