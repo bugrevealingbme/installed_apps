@@ -60,6 +60,11 @@ class InstalledApps {
     }) ?? false;
   }
 
+  /// cancelCloseBackgroundApps
+  static Future<void> cancelCloseBackgroundApps() async {
+    await _channel.invokeMethod("cancelCloseBackgroundApps");
+  }
+  
   /// Getting running apps
   /// [excludeSystemApps] specifies whether to exclude system apps from the list.wld
   /// Returns a list of [AppInfo] objects representing the installed apps.
