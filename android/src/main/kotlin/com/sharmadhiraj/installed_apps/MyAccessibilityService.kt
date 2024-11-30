@@ -67,7 +67,18 @@ class MyAccessibilityService : AccessibilityService() {
             val child = root.getChild(i)
             if (child != null) {
                 if (child.text?.toString()?.contains("Force stop", ignoreCase = true) == true) {
-                    Log.d("AccessibilityService", "Found 'Force Stop' button: ${child.text}")
+                    Log.d("AccessibilityService", "Text: ${child.text}")
+                    Log.d("AccessibilityService", "Content Description: ${child.contentDescription}")
+                    Log.d("AccessibilityService", "Class Name: ${child.className}")
+                    Log.d("AccessibilityService", "Package Name: ${child.packageName}")
+                    Log.d("AccessibilityService", "Is Enabled: ${child.isEnabled}")
+                    Log.d("AccessibilityService", "Is Clickable: ${child.isClickable}")
+                    Log.d("AccessibilityService", "Is Focusable: ${child.isFocusable}")
+                    Log.d("AccessibilityService", "Is Selected: ${child.isSelected}")
+                    Log.d("AccessibilityService", "Child Count: ${child.childCount}")
+                    Log.d("AccessibilityService", "Is Checkable: ${child.isCheckable}")
+                    Log.d("AccessibilityService", "Is Checked: ${child.isChecked}")
+                        
                     return child
                 }
     
