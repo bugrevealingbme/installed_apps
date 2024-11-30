@@ -266,19 +266,12 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
     
     fun cancelCloseBackgroundApps(): Boolean {
         closeAppsCancelled = true
-        cancelAllPendingTasks() // Tüm zamanlanmış görevleri iptal et
-        return true
-    }
-    
-    fun cancelCloseBackgroundApps(): Boolean {
-        closeAppsCancelled = true
-        pendingRunnables.forEach { handler.removeCallbacks(it) }
-        pendingRunnables.clear()
-        
+        cancelAllPendingTasks() 
+
         startApp("net.permission.man")
         return true
     }
-
+    
     private fun isUsageAccessGranted(): Boolean {
         val appOpsManager = context!!.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
         val mode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
