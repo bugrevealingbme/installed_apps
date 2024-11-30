@@ -230,6 +230,7 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
     
             if (packageName != context!!.packageName) {
                 val runnable = Runnable {
+                    Log.e("test", "closeAppsCancelled: $closeAppsCancelled")
                     if (closeAppsCancelled) {
                         cancelAllPendingTasks()
                         callback(true)
