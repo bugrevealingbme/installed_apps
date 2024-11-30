@@ -229,7 +229,6 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
                 handler.postDelayed({
                     if (closeAppsCancelled) {
                         callback(false)
-                        return true
                     }
     
                     accessibilityService.closeAppInBackground(context!!, packageName)
