@@ -1,0 +1,5 @@
+<resources>
+    <string name="accessibility_service_description">Used to kill background applications.</string>
+    <string name="force_stop">Force stop</string>
+    <string name="ok">OK</string>
+</resources>
