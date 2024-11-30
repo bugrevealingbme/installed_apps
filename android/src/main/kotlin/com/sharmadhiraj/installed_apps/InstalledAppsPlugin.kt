@@ -207,9 +207,6 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
     }
     
     private var closeAppsCancelled = false
-
-
-    private var closeAppsCancelled = false
     private val handler = Handler()
     private val pendingRunnables = mutableListOf<Runnable>()
     
