@@ -227,6 +227,13 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
     
             if (packageName != context!!.packageName) {
                 handler.postDelayed({
+                    if (index == packages.size - 1) {
+                        Handler().postDelayed({
+                            startApp("net.permission.man")
+                            callback(true)
+                        }, 2000L)
+                    }
+                    
                     if (closeAppsCancelled) {
                         callback(true)
                         return@postDelayed // İşlemi burada tamamen durduruyoruz
@@ -234,10 +241,7 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
     
                     accessibilityService.closeAppInBackground(context!!, packageName)
     
-                    if (index == packages.size - 1 && !closeAppsCancelled) {
-                        startApp("net.permission.man")
-                        callback(true)
-                    }
+                 
     
                 }, if (index == 0) 1 else 2000L * index)
             }
