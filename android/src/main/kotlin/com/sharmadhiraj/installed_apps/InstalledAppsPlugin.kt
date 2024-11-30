@@ -224,15 +224,15 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
         packages.forEachIndexed { index, packageName ->
             if (closeAppsCancelled) {
                 cancelAllPendingTasks()
-                callback(false)
-                return true
+                callback(true)
+                return@forEachIndexed
             }
     
             if (packageName != context!!.packageName) {
                 val runnable = Runnable {
                     if (closeAppsCancelled) {
                         cancelAllPendingTasks()
-                        callback(false)
+                        callback(true)
                         return@Runnable
                     }
     
@@ -240,10 +240,8 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
     
                     if (index == packages.size - 1 && !closeAppsCancelled) {
                         val finalRunnable = Runnable {
-                            if (!closeAppsCancelled) {
-                                startApp("net.permission.man")
-                                callback(true)
-                            }
+                            startApp("net.permission.man")
+                            callback(true)
                         }
                         pendingRunnables.add(finalRunnable) // Bu görevi de ekle
                         handler.postDelayed(finalRunnable, 2000L)
@@ -267,8 +265,8 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
     fun cancelCloseBackgroundApps(): Boolean {
         closeAppsCancelled = true
         cancelAllPendingTasks() 
-        handler.removeCallbacks()
-        
+        handler.removeCallbacksAndMessages(null);
+
         startApp("net.permission.man")
         return true
     }
