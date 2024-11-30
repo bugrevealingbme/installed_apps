@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import android.content.Context
-import android.os.Handler
 
 class MyAccessibilityService : AccessibilityService() {
 
@@ -25,18 +24,15 @@ class MyAccessibilityService : AccessibilityService() {
                 if (forceStopButton != null && forceStopButton.isEnabled) {
                     val clickableNode = getClickableNode(forceStopButton)
                     clickableNode?.performAction(AccessibilityNodeInfo.ACTION_CLICK)
-                    
+
                     // "OK" popup'ını kontrol et ve tıkla
-                    //Handler().postDelayed({
-                        val okButton = findButtonByText(rootNode, "OK")
-                        val clickableokButton = getClickableNode(okButton)
-                        if (clickableokButton != null) {
-                            clickableokButton.performAction(AccessibilityNodeInfo.ACTION_CLICK)
-                        }
-                    //}, 1000)
+                    val okButton = findButtonByText(rootNode, getString(R.string.ok))
+                    val clickableOkButton = getClickableNode(okButton)
+                    if (clickableOkButton != null) {
+                        clickableOkButton.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+                    }
                 } else {
-                    //
-                    Log.d("AccessibilityService", "No button amk $forceStopButton")
+                    Log.d("AccessibilityService", "Force Stop button not found or not enabled.")
                 }
             } else {
                 Log.d("AccessibilityService", "Root node is null.")
@@ -58,18 +54,18 @@ class MyAccessibilityService : AccessibilityService() {
         } catch (e: Exception) {
             Log.e("AccessibilityService", "Error opening app settings: ${e.message}")
         }
-        
         return true
     }
 
     private fun findForceStopButtonGenerically(root: AccessibilityNodeInfo): AccessibilityNodeInfo? {
+        val forceStopText = getString(R.string.force_stop)
         for (i in 0 until root.childCount) {
             val child = root.getChild(i)
             if (child != null) {
-                if (child.text?.toString()?.contains("Force stop", ignoreCase = true) == true) {
+                if (child.text?.toString()?.contains(forceStopText, ignoreCase = true) == true) {
                     return child
                 }
-    
+
                 // Çocuk düğümleri de tara
                 val result = findForceStopButtonGenerically(child)
                 if (result != null) {
@@ -83,21 +79,7 @@ class MyAccessibilityService : AccessibilityService() {
     private fun getClickableNode(node: AccessibilityNodeInfo?): AccessibilityNodeInfo? {
         var currentNode = node
         while (currentNode != null) {
-            // Tıklanabilir bir düğüm buldukça loglama yapıyoruz
             if (currentNode.isClickable) {
-                Log.d("AccessibilityService", "Found clickable node:")
-                Log.d("AccessibilityService", "Text: ${currentNode.text}")
-                Log.d("AccessibilityService", "Content Description: ${currentNode.contentDescription}")
-                Log.d("AccessibilityService", "Class Name: ${currentNode.className}")
-                Log.d("AccessibilityService", "Package Name: ${currentNode.packageName}")
-                Log.d("AccessibilityService", "Is Enabled: ${currentNode.isEnabled}")
-                Log.d("AccessibilityService", "Is Clickable: ${currentNode.isClickable}")
-                Log.d("AccessibilityService", "Is Focusable: ${currentNode.isFocusable}")
-                Log.d("AccessibilityService", "Is Selected: ${currentNode.isSelected}")
-                Log.d("AccessibilityService", "Child Count: ${currentNode.childCount}")
-                Log.d("AccessibilityService", "Is Checkable: ${currentNode.isCheckable}")
-                Log.d("AccessibilityService", "Is Checked: ${currentNode.isChecked}")
-                
                 return currentNode
             }
             currentNode = currentNode.parent
@@ -105,12 +87,11 @@ class MyAccessibilityService : AccessibilityService() {
         return null
     }
 
-
     private fun findButtonByText(node: AccessibilityNodeInfo, text: String): AccessibilityNodeInfo? {
         if (node.text != null && node.text.toString() == text) {
             return node
         }
-    
+
         for (i in 0 until node.childCount) {
             val child = node.getChild(i)
             if (child != null) {
@@ -126,10 +107,9 @@ class MyAccessibilityService : AccessibilityService() {
     fun simulateBackPress() {
         performGlobalAction(GLOBAL_ACTION_BACK)
     }
-    
+
     private fun findForceStopButton(root: AccessibilityNodeInfo): AccessibilityNodeInfo? {
-        // Önce View ID ile, ardından metin ile arıyoruz
         return root.findAccessibilityNodeInfosByViewId("com.android.settings:id/force_stop_button").firstOrNull()
-            ?: root.findAccessibilityNodeInfosByText("Force stop").firstOrNull()
+            ?: root.findAccessibilityNodeInfosByText(getString(R.string.force_stop)).firstOrNull()
     }
 }
