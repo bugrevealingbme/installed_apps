@@ -211,7 +211,7 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
         if (!isAccessibilityPermissionGranted()) {
             Log.e("AccessibilityPermission", "Accessibility permission is not granted.")
             callback(false)
-            return
+            return true
         }
     
         closeAppsCancelled = false
@@ -222,14 +222,14 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
         packages.forEachIndexed { index, packageName ->
             if (closeAppsCancelled) {
                 callback(false)
-                return
+                return true
             }
     
             if (packageName != context!!.packageName) {
                 handler.postDelayed({
                     if (closeAppsCancelled) {
                         callback(false)
-                        return
+                        return true
                     }
     
                     accessibilityService.closeAppInBackground(context!!, packageName)
@@ -242,6 +242,8 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
                 }, if (index == 0) 1 else 2000L * index)
             }
         }
+
+        return false
     }
     
     fun cancelCloseBackgroundApps(): Boolean {
