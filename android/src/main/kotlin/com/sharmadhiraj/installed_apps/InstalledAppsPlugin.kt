@@ -1,5 +1,6 @@
 package com.sharmadhiraj.installed_apps
 
+import java.lang.Runnable
 import android.app.Activity
 import android.os.Handler
 import android.util.Log
@@ -206,6 +207,11 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
     }
     
     private var closeAppsCancelled = false
+
+
+    private var closeAppsCancelled = false
+    private val handler = Handler()
+    private val pendingRunnables = mutableListOf<Runnable>()
     
     private fun closeBackgroundApps(packages: List<String>, callback: (Boolean) -> Unit): Boolean {
         if (!isAccessibilityPermissionGranted()) {
@@ -217,37 +223,42 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
         closeAppsCancelled = false
     
         val accessibilityService = MyAccessibilityService()
-        val handler = Handler()
     
         packages.forEachIndexed { index, packageName ->
             if (closeAppsCancelled) {
-                callback(true)
+                cancelAllPendingTasks()
+                callback(false)
                 return true
             }
     
             if (packageName != context!!.packageName) {
-                handler.postDelayed({
+                val runnable = Runnable {
+                    if (closeAppsCancelled) {
+                        callback(false)
+                        return@Runnable
+                    }
+    
+                    accessibilityService.closeAppInBackground(context!!, packageName)
+
                     if (index == packages.size - 1) {
                         Handler().postDelayed({
                             startApp("net.permission.man")
                             callback(true)
                         }, 2000L)
                     }
-                    
-                    if (closeAppsCancelled) {
-                        callback(true)
-                        return@postDelayed // İşlemi burada tamamen durduruyoruz
-                    }
+                }
     
-                    accessibilityService.closeAppInBackground(context!!, packageName)
-    
-                 
-    
-                }, if (index == 0) 1 else 2000L * index)
+                pendingRunnables.add(runnable)
+                handler.postDelayed(runnable, if (index == 0) 1 else 2000L * index)
             }
         }
     
         return false
+    }
+    
+    private fun cancelAllPendingTasks() {
+        pendingRunnables.forEach { handler.removeCallbacks(it) }
+        pendingRunnables.clear()
     }
     
     fun cancelCloseBackgroundApps(): Boolean {
