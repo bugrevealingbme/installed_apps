@@ -67,18 +67,6 @@ class MyAccessibilityService : AccessibilityService() {
             val child = root.getChild(i)
             if (child != null) {
                 if (child.text?.toString()?.contains("Force stop", ignoreCase = true) == true) {
-                    Log.d("AccessibilityService", "Text: ${child.text}")
-                    Log.d("AccessibilityService", "Content Description: ${child.contentDescription}")
-                    Log.d("AccessibilityService", "Class Name: ${child.className}")
-                    Log.d("AccessibilityService", "Package Name: ${child.packageName}")
-                    Log.d("AccessibilityService", "Is Enabled: ${child.isEnabled}")
-                    Log.d("AccessibilityService", "Is Clickable: ${child.isClickable}")
-                    Log.d("AccessibilityService", "Is Focusable: ${child.isFocusable}")
-                    Log.d("AccessibilityService", "Is Selected: ${child.isSelected}")
-                    Log.d("AccessibilityService", "Child Count: ${child.childCount}")
-                    Log.d("AccessibilityService", "Is Checkable: ${child.isCheckable}")
-                    Log.d("AccessibilityService", "Is Checked: ${child.isChecked}")
-                        
                     return child
                 }
     
@@ -95,13 +83,28 @@ class MyAccessibilityService : AccessibilityService() {
     private fun getClickableNode(node: AccessibilityNodeInfo?): AccessibilityNodeInfo? {
         var currentNode = node
         while (currentNode != null) {
+            // Tıklanabilir bir düğüm buldukça loglama yapıyoruz
             if (currentNode.isClickable) {
+                Log.d("AccessibilityService", "Found clickable node:")
+                Log.d("AccessibilityService", "Text: ${currentNode.text}")
+                Log.d("AccessibilityService", "Content Description: ${currentNode.contentDescription}")
+                Log.d("AccessibilityService", "Class Name: ${currentNode.className}")
+                Log.d("AccessibilityService", "Package Name: ${currentNode.packageName}")
+                Log.d("AccessibilityService", "Is Enabled: ${currentNode.isEnabled}")
+                Log.d("AccessibilityService", "Is Clickable: ${currentNode.isClickable}")
+                Log.d("AccessibilityService", "Is Focusable: ${currentNode.isFocusable}")
+                Log.d("AccessibilityService", "Is Selected: ${currentNode.isSelected}")
+                Log.d("AccessibilityService", "Child Count: ${currentNode.childCount}")
+                Log.d("AccessibilityService", "Is Checkable: ${currentNode.isCheckable}")
+                Log.d("AccessibilityService", "Is Checked: ${currentNode.isChecked}")
+                
                 return currentNode
             }
             currentNode = currentNode.parent
         }
         return null
     }
+
 
     private fun findButtonByText(node: AccessibilityNodeInfo, text: String): AccessibilityNodeInfo? {
         if (node.text != null && node.text.toString() == text) {
