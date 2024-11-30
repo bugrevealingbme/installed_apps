@@ -205,7 +205,7 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
         return enabledServices?.contains(myServiceName) == true &&
                 accessibilityManager.isEnabled
     }
-    
+
     private var closeAppsCancelled = false
     private val handler = Handler()
     private val pendingRunnables = mutableListOf<Runnable>()
@@ -223,24 +223,30 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
     
         packages.forEachIndexed { index, packageName ->
             if (closeAppsCancelled) {
-                callback(true)
+                cancelAllPendingTasks()
+                callback(false)
                 return true
             }
     
             if (packageName != context!!.packageName) {
                 val runnable = Runnable {
                     if (closeAppsCancelled) {
-                        callback(true)
+                        cancelAllPendingTasks()
+                        callback(false)
                         return@Runnable
                     }
     
                     accessibilityService.closeAppInBackground(context!!, packageName)
-
-                    if (index == packages.size - 1) {
-                        Handler().postDelayed({
-                            startApp("net.permission.man")
-                            callback(true)
-                        }, 2000L)
+    
+                    if (index == packages.size - 1 && !closeAppsCancelled) {
+                        val finalRunnable = Runnable {
+                            if (!closeAppsCancelled) {
+                                startApp("net.permission.man")
+                                callback(true)
+                            }
+                        }
+                        pendingRunnables.add(finalRunnable) // Bu görevi de ekle
+                        handler.postDelayed(finalRunnable, 2000L)
                     }
                 }
     
@@ -250,6 +256,18 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
         }
     
         return false
+    }
+    
+    private fun cancelAllPendingTasks() {
+        // Tüm zamanlanmış görevleri iptal et
+        pendingRunnables.forEach { handler.removeCallbacks(it) }
+        pendingRunnables.clear()
+    }
+    
+    fun cancelCloseBackgroundApps(): Boolean {
+        closeAppsCancelled = true
+        cancelAllPendingTasks() // Tüm zamanlanmış görevleri iptal et
+        return true
     }
     
     fun cancelCloseBackgroundApps(): Boolean {
