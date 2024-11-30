@@ -337,7 +337,7 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
                     try {
                         val appInfo = packageManager.getApplicationInfo(packageName, 0)
                         val isSystemApp = (appInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0
-                        if (!excludeSystemApps || !isSystemApp) {) {
+                        if (!excludeSystemApps || !isSystemApp) {
                             val appMap = convertAppToMap(packageManager, appInfo, withIcon, platformType)
                             runningApps.add(appMap)
                         }
