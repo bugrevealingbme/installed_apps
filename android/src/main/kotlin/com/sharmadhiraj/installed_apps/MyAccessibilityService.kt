@@ -1,116 +1,57 @@
 package com.sharmadhiraj.installed_apps
 
-import com.sharmadhiraj.installed_apps.R
 import android.accessibilityservice.AccessibilityService
-import android.content.Intent
-import android.net.Uri
-import android.provider.Settings
+import android.annotation.SuppressLint
+import android.graphics.Color
+import android.graphics.PixelFormat
 import android.util.Log
+import android.view.Gravity
+import android.view.WindowManager
+import android.view.WindowManager.LayoutParams
 import android.view.accessibility.AccessibilityEvent
-import android.view.accessibility.AccessibilityNodeInfo
-import android.content.Context
+import android.widget.LinearLayout
+import kotlin.random.Random
+
 
 class MyAccessibilityService : AccessibilityService() {
 
-    override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        if (event == null) return
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onServiceConnected() {
+        val windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
+        val layout = LinearLayout(applicationContext)
+        layout.setBackgroundColor(Color.GREEN and 0x55FFFFFF)
 
-        // Event'in window content değişikliği ile ilgili olup olmadığını kontrol ediyoruz
-        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED ||
-            event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-            val rootNode = rootInActiveWindow
-            if (rootNode != null) {
-                // "Force Stop" butonunu arıyoruz
-                val forceStopButton = findForceStopButtonGenerically(rootNode)
-                if (forceStopButton != null && forceStopButton.isEnabled) {
-                    val clickableNode = getClickableNode(forceStopButton)
-                    clickableNode?.performAction(AccessibilityNodeInfo.ACTION_CLICK)
-
-                    // "OK" popup'ını kontrol et ve tıkla
-                    val okButton = findButtonByText(rootNode, getString(R.string.ok))
-                    val clickableOkButton = getClickableNode(okButton)
-                    if (clickableOkButton != null) {
-                        clickableOkButton.performAction(AccessibilityNodeInfo.ACTION_CLICK)
-                    }
-                } else {
-                    Log.d("AccessibilityService", "Force Stop button not found or not enabled.")
-                }
-            } else {
-                Log.d("AccessibilityService", "Root node is null.")
-            }
+        val layoutParams = LayoutParams()
+        layoutParams.apply {
+            y = 500
+            x = 400
+            width = 300
+            height = 300
+            type = LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
+            gravity = Gravity.TOP or Gravity.LEFT
+            format = PixelFormat.TRANSPARENT
+            flags = LayoutParams.FLAG_NOT_FOCUSABLE
         }
-    }
 
-    override fun onInterrupt() {}
-
-    // Ayar ekranını açmak için kullanılır
-    fun closeAppInBackground(context: Context, packageName: String): Boolean {
         try {
-            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                data = Uri.parse("package:$packageName")
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
-            context.startActivity(intent)
-            Log.d("AccessibilityService", "App settings screen opened for package: $packageName")
-        } catch (e: Exception) {
-            Log.e("AccessibilityService", "Error opening app settings: ${e.message}")
-        }
-        return true
-    }
-
-    private fun findForceStopButtonGenerically(root: AccessibilityNodeInfo): AccessibilityNodeInfo? {
-        val forceStopText = getString(R.string.force_stop)
-        for (i in 0 until root.childCount) {
-            val child = root.getChild(i)
-            if (child != null) {
-                if (child.text?.toString()?.contains(forceStopText, ignoreCase = true) == true) {
-                    return child
-                }
-
-                // Çocuk düğümleri de tara
-                val result = findForceStopButtonGenerically(child)
-                if (result != null) {
-                    return result
-                }
-            }
-        }
-        return null
-    }
-
-    private fun getClickableNode(node: AccessibilityNodeInfo?): AccessibilityNodeInfo? {
-        var currentNode = node
-        while (currentNode != null) {
-            if (currentNode.isClickable) {
-                return currentNode
-            }
-            currentNode = currentNode.parent
-        }
-        return null
-    }
-
-    private fun findButtonByText(node: AccessibilityNodeInfo, text: String): AccessibilityNodeInfo? {
-        if (node.text != null && node.text.toString() == text) {
-            return node
+            windowManager.addView(layout, layoutParams)
+        } catch (ex: Exception) {
+            Log.e("ACCSVC", "adding view failed", ex)
         }
 
-        for (i in 0 until node.childCount) {
-            val child = node.getChild(i)
-            if (child != null) {
-                val button = findButtonByText(child, text)
-                if (button != null) {
-                    return button
-                }
-            }
+        val random = Random(System.currentTimeMillis())
+        layout.setOnTouchListener { view, event ->
+            Log.i("ACCSVC", "event $event")
+            layout.setBackgroundColor((random.nextInt() or 0xFF000000.toInt()) and 0x55FFFFFF)
+            true
         }
-        return null
     }
 
-    fun simulateBackPress() {
-        performGlobalAction(GLOBAL_ACTION_BACK)
+    override fun onAccessibilityEvent(event: AccessibilityEvent?) {
+        Log.i("ACCSVC", "accessibility event $event")
     }
 
-    private fun findForceStopButton(root: AccessibilityNodeInfo): AccessibilityNodeInfo? {
-        return root.findAccessibilityNodeInfosByViewId("com.android.settings:id/force_stop_button").firstOrNull()
-            ?: root.findAccessibilityNodeInfosByText(getString(R.string.force_stop)).firstOrNull()
+    override fun onInterrupt() {
+        Log.i("ACCSVC", "interrupt")
     }
 }
