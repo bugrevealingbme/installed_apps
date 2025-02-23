@@ -32,7 +32,6 @@ import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import io.flutter.plugin.common.PluginRegistry.Registrar
 import java.util.Locale.ENGLISH
 
 class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
@@ -45,27 +44,24 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
          val pendingRunnables = mutableListOf<Runnable>()
          
         @JvmStatic
-        fun registerWith(registrar: Registrar) {
-            context = registrar.context()
-            register(registrar.messenger())
-        }
-
-        @JvmStatic
         fun register(messenger: BinaryMessenger) {
             val channel = MethodChannel(messenger, "installed_apps")
             channel.setMethodCallHandler(InstalledAppsPlugin())
         }
     }
 
-    override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        register(binding.binaryMessenger)
+   override fun onAttachedToEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+        context = binding.applicationContext
+        channel = MethodChannel(binding.binaryMessenger, "installed_apps")
+        channel.setMethodCallHandler(this)
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
     }
 
-    override fun onAttachedToActivity(activityPluginBinding: ActivityPluginBinding) {
-        context = activityPluginBinding.activity
+    override fun onAttachedToActivity(binding: ActivityPluginBinding) {
+        activity = binding.activity
+        context = binding.activity.applicationContext
     }
 
     override fun onDetachedFromActivityForConfigChanges() {}
