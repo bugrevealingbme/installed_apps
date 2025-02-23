@@ -40,6 +40,8 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
     private var context: Context? = null
     private var activity: Activity? = null
     private val handler = Handler()
+    private var closeAppsCancelled = false
+    private val pendingRunnables = mutableListOf<Runnable>()
 
    override fun onAttachedToEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
         context = binding.applicationContext
