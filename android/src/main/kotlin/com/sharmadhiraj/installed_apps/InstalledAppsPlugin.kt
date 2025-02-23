@@ -33,6 +33,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import java.util.Locale.ENGLISH
+import androidx.annotation.NonNull
 
 class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
 
