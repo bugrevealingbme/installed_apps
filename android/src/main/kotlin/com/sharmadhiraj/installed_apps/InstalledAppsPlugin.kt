@@ -36,19 +36,10 @@ import java.util.Locale.ENGLISH
 
 class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
 
-    companion object {
-
-        var context: Context? = null
-         var closeAppsCancelled = false
-         val handler = Handler()
-         val pendingRunnables = mutableListOf<Runnable>()
-         
-        @JvmStatic
-        fun register(messenger: BinaryMessenger) {
-            val channel = MethodChannel(messenger, "installed_apps")
-            channel.setMethodCallHandler(InstalledAppsPlugin())
-        }
-    }
+    private lateinit var channel: MethodChannel
+    private var context: Context? = null
+    private var activity: Activity? = null
+    private val handler = Handler()
 
    override fun onAttachedToEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
         context = binding.applicationContext
